@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Poppins:wght@500;600&display=swap');
+
+/* ─── VARIÁVEIS ─────────────────────────────────── */
+:root {
+  --black:   #0A0A0A;
+  --white:   #F5F5F5;
+  --gray-1:  #1C1C1C;
+  --gray-2:  #2A2A2A;
+  --gray-3:  #8B8B8B;
+  --orange:  #FF6A1A;
+
+  --font-title: 'Montserrat', sans-serif;
+  --font-body:  'Montserrat', sans-serif;
+  --font-btn:   'Poppins', sans-serif;
+}
+
+/* ─── RESET ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── ANIMAÇÃO REVEAL ────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
