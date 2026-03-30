@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 
 const portfolioItems = [
-  { label: 'Site institucional — DYF Engenharia', src: '/Imagens/MOCKUP-SITE-DYF.png' },
-  { label: 'Feed institucional — DYF Engenharia', src: '/Imagens/DYF-FEED-DOIS.png' },
+  { label: 'Site institucional — DYF Engenharia', desc: 'Landing page para fortalecer autoridade técnica e apresentação comercial.', src: '/Imagens/MOCKUP-SITE-DYF.png' },
+  { label: 'Feed institucional — DYF Engenharia', desc: 'Conteúdo visual para reforçar percepção profissional e presença digital.', src: '/Imagens/DYF-FEED-DOIS.png' },
   { label: 'Criativo feed — DYF Engenharia', src: '/Imagens/DYF-FEED-UM.png' },
-  { label: 'Site institucional — Hazel Contábil', src: '/Imagens/MOCKUP-SITE-HAZEL.png' },
+  { label: 'Site institucional — Hazel Contábil', desc: 'Página para posicionar a marca como contabilidade consultiva e profissional.', src: '/Imagens/MOCKUP-SITE-HAZEL.png' },
   { label: 'Palestra corporativa — Hazel Contábil', src: '/Imagens/PALESTRA-CESVALE-HAZEL.png' },
   { label: 'Criativo IR 2026 — Hazel Contábil', src: '/Imagens/IR-2026-HAZEL.png' },
 ];
@@ -79,24 +79,40 @@ export default function DynamicFrameLayout() {
             <div style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%)',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)',
               display: 'flex',
               alignItems: 'flex-end',
               padding: '12px',
             }}>
-              <span style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                color: '#F5F5F5',
-                background: 'rgba(10,10,10,0.75)',
-                padding: '4px 10px',
+              <div style={{
+                background: 'rgba(10,10,10,0.85)',
+                padding: '6px 10px',
                 borderRadius: '6px',
                 backdropFilter: 'blur(6px)',
-                fontFamily: 'Montserrat, sans-serif',
-                display: 'block',
+                width: '100%'
               }}>
-                {item.label}
-              </span>
+                <span style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#F5F5F5',
+                  fontFamily: 'Montserrat, sans-serif',
+                  display: 'block',
+                }}>
+                  {item.label}
+                </span>
+                {item.desc && (
+                  <span style={{
+                    fontSize: '10px',
+                    color: '#8B8B8B',
+                    fontFamily: 'Poppins, sans-serif',
+                    marginTop: '2px',
+                    display: 'block',
+                    lineHeight: 1.3
+                  }}>
+                    {item.desc}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         ))}
@@ -173,21 +189,37 @@ export default function DynamicFrameLayout() {
                   opacity: isHovered ? 1 : 0,
                   transition: 'opacity 0.4s ease',
                 }}>
-                  <span style={{
-                    fontSize: '13px',
-                    fontWeight: 700,
-                    color: '#F5F5F5',
-                    background: 'rgba(10,10,10,0.75)',
-                    padding: '6px 14px',
-                    borderRadius: '6px',
+                  <div style={{
+                    background: 'rgba(10,10,10,0.85)',
+                    padding: '10px 14px',
+                    borderRadius: '8px',
                     backdropFilter: 'blur(6px)',
-                    fontFamily: 'Montserrat, sans-serif',
                     transform: isHovered ? 'translateY(0)' : 'translateY(10px)',
                     transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)',
-                    display: 'block',
+                    width: '100%'
                   }}>
-                    {item.label}
-                  </span>
+                    <span style={{
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      color: '#F5F5F5',
+                      fontFamily: 'Montserrat, sans-serif',
+                      display: 'block',
+                    }}>
+                      {item.label}
+                    </span>
+                    {item.desc && (
+                      <span style={{
+                        fontSize: '11px',
+                        color: '#8B8B8B',
+                        fontFamily: 'Poppins, sans-serif',
+                        marginTop: '4px',
+                        display: 'block',
+                        lineHeight: 1.4
+                      }}>
+                        {item.desc}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             );

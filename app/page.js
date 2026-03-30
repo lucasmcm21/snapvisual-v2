@@ -1,10 +1,104 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import LeadModal from '@/components/LeadModal';
 import DynamicFrameLayout from '@/components/DynamicFrameLayout';
 import BackgroundScene from '@/components/ui/aurora-section-hero';
 import ShimmerText from '@/components/ui/shimmer-text';
+
+const ServiceVideo = ({ videoSrc }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const videoRef = useRef(null);
+  const containerRef = useRef(null);
+
+  const togglePlay = (e) => {
+    if (e) e.stopPropagation();
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const toggleMute = (e) => {
+    if (e) e.stopPropagation();
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(videoRef.current.muted);
+    }
+  };
+
+  const toggleFullscreen = (e) => {
+    if (e) e.stopPropagation();
+    if (!document.fullscreenElement) {
+      if (containerRef.current.requestFullscreen) containerRef.current.requestFullscreen();
+      else if (containerRef.current.webkitRequestFullscreen) containerRef.current.webkitRequestFullscreen();
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    // Adiciona listener para padronizados e Webkit
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  return (
+    <div 
+      className={`scard-video ${isPlaying ? 'playing' : ''} ${isFullscreen ? 'isfullscreen' : ''}`} 
+      ref={containerRef}
+      onClick={togglePlay}
+    >
+      <video ref={videoRef} src={videoSrc} muted={isMuted} loop playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      <div className="scard-play" style={{ opacity: isPlaying ? '0' : '1', transition: 'opacity 0.3s' }}>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M8 5.14v13.72a1 1 0 001.5.86l11.04-6.86a1 1 0 000-1.72L9.5 4.28a1 1 0 00-1.5.86z" fill="#FF6A1A"/></svg>
+      </div>
+      
+      <div className="mobile-video-controls" onClick={e => e.stopPropagation()}>
+         <button onClick={togglePlay} className="mvc-btn">
+           {isPlaying ? (
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFF"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+           ) : (
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFF"><path d="M8 5v14l11-7z"/></svg>
+           )}
+         </button>
+         <button onClick={toggleMute} className="mvc-btn">
+           {isMuted ? (
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFF"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+           ) : (
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFF"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+           )}
+         </button>
+         <button onClick={toggleFullscreen} className="mvc-btn">
+           {isFullscreen ? (
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFF"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+           ) : (
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFF"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+           )}
+         </button>
+      </div>
+
+      <button className="mvc-close-btn" onClick={toggleFullscreen} style={{ display: isFullscreen ? 'flex' : 'none' }}>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#FFF"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+  );
+};
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -163,8 +257,21 @@ export default function Home() {
         .footer-links a { font-size: 13px; color: #8B8B8B; text-decoration: none; transition: color 0.2s; }
         .footer-links a:hover { color: #F5F5F5; }
 
+        .mobile-video-controls { display: none; }
+        .mvc-close-btn { display: none; position: absolute; top: 16px; right: 16px; z-index: 20; background: rgba(0,0,0,0.5); border: none; border-radius: 50%; padding: 6px; cursor: pointer; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .scard-video.isfullscreen { opacity: 1 !important; }
+        .scard-video.isfullscreen .mobile-video-controls { top: 24px; }
+
         /* MOBILE */
         @media (max-width: 900px) {
+          .mobile-video-controls { 
+            display: flex; position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+            background: rgba(10,10,10,0.7); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 100px;
+            gap: 20px; z-index: 10; align-items: center; border: 1px solid rgba(255,255,255,0.1);
+          }
+          .mvc-btn {
+            background: none; border: none; display: flex; align-items: center; justify-content: center; padding: 4px; cursor: pointer;
+          }
           header { padding: 0 20px; }
           .nav a:not(.cta) { display: none; }
           .hero { padding: 90px 24px 60px; }
@@ -210,15 +317,15 @@ export default function Home() {
           <BackgroundScene />
           <div className="hero-badge reveal">Criativos Institucionais · Edição de Vídeo · Landing Pages</div>
           <ShimmerText as="h1" className="reveal d1">Fim do visual amador.<br />Sua marca pronta<br />para vender.</ShimmerText>
-          <p className="hero-sub reveal d2">A SnapVisual cria criativos institucionais, edita vídeos e desenvolve landing pages para negócios que precisam parecer profissionais no digital.</p>
+          <p className="hero-sub reveal d2">Criativos institucionais, vídeos e landing pages para negócios que precisam transmitir mais confiança, profissionalismo e valor no digital.</p>
           <div className="hero-btns reveal d3">
-            <button className="btn-orange" onClick={openModal}><span className="s" /><span className="s" /><span className="s" /><span className="s" />Quero melhorar minha marca</button>
+            <button className="btn-orange" onClick={openModal}><span className="s" /><span className="s" /><span className="s" /><span className="s" />Pedir orçamento</button>
             <a href="#portfolio" className="btn-outline"><span className="s" /><span className="s" /><span className="s" /><span className="s" />Ver nossos trabalhos</a>
           </div>
           <div className="hero-stats reveal d4">
             <div><div className="stat-num">+<span>30</span></div><div className="stat-label">marcas atendidas</div></div>
             <div><div className="stat-num"><span>100</span>%</div><div className="stat-label">entregue no prazo</div></div>
-            <div><div className="stat-num">imediata</div><div className="stat-label">resposta média</div></div>
+            <div><div className="stat-num" style={{fontSize: '32px'}}>Em poucas horas</div><div className="stat-label">Resposta rápida</div></div>
           </div>
         </section>
 
@@ -249,45 +356,28 @@ export default function Home() {
                 {
                   num: '01',
                   title: 'Criativos Institucionais',
-                  desc: 'Posts, banners e peças visuais com identidade real. Comunicação que representa a marca com profissionalismo e converte no feed.',
+                  desc: 'Posts, banners e peças visuais com identidade real, pensados para valorizar a marca, organizar a comunicação e transmitir mais profissionalismo no digital.',
                   tags: ['Feed', 'Stories', 'Banners', 'Apresentações'],
                   bg: '/Imagens/PALESTRA-CESVALE-HAZEL.png'
                 },
                 {
                   num: '02',
                   title: 'Edição de Vídeo',
-                  desc: 'Cortes precisos, motion e tratamento de cor para vídeos institucionais, reels e conteúdo corporativo que prende atenção.',
+                  desc: 'Edição de vídeos com ritmo, acabamento e identidade visual para reels, materiais institucionais e conteúdos que precisam parecer mais profissionais.',
                   tags: ['Reels', 'Institucional', 'Motion', 'Corporativo'],
                   video: '/Imagens/SEU-VIDEO.mp4'
                 },
                 {
                   num: '03',
                   title: 'Landing Pages',
-                  desc: 'Páginas de conversão com estrutura clara, copy direto e design que guia o visitante até a ação. Feitas para vender.',
+                  desc: 'Landing pages com estrutura clara, copy objetivo e design orientado à ação, pensadas para apresentar melhor sua oferta e facilitar o contato.',
                   tags: ['Conversão', 'Copy', 'Mobile first', 'CTA claro'],
                   bg: '/Imagens/MOCKUP-SITE-DYF.png'
                 },
               ].map((s, i) => (
                 <div key={i} className={`scard reveal d${i + 1}`}>
                   {s.video ? (
-                    <div className="scard-video" onClick={e => {
-                      const video = e.currentTarget.querySelector('video');
-                      const playBtn = e.currentTarget.querySelector('.scard-play');
-                      if (video.paused) {
-                        video.play();
-                        e.currentTarget.classList.add('playing');
-                        playBtn.style.opacity = '0';
-                      } else {
-                        video.pause();
-                        e.currentTarget.classList.remove('playing');
-                        playBtn.style.opacity = '1';
-                      }
-                    }}>
-                      <video src={s.video} muted loop playsInline />
-                      <div className="scard-play">
-                        <svg viewBox="0 0 24 24" fill="none"><path d="M8 5.14v13.72a1 1 0 001.5.86l11.04-6.86a1 1 0 000-1.72L9.5 4.28a1 1 0 00-1.5.86z" fill="#FF6A1A"/></svg>
-                      </div>
-                    </div>
+                    <ServiceVideo videoSrc={s.video} />
                   ) : (
                     <div className="scard-bg" style={{ backgroundImage: `url(${s.bg})` }} />
                   )}
@@ -309,7 +399,7 @@ export default function Home() {
           <div className="nichos-inner">
             <div className="nichos-head">
               <div className="section-eyebrow reveal">Para quem fazemos</div>
-              <h2 className="section-title reveal d1">Marcas que precisam parecer maiores do que parecem</h2>
+              <h2 className="section-title reveal d1">Para negócios que já não podem parecer amadores</h2>
             </div>
             <div className="nichos-grid">
               {[
@@ -337,10 +427,11 @@ export default function Home() {
             </div>
             <div className="why-grid">
               {[
-                { n: '01', title: 'Resposta rápida', desc: 'Seu negócio não pode esperar dias por retorno. A comunicação anda no ritmo da sua demanda.' },
+                { n: '01', title: 'Resposta rápida', desc: 'Você não fica dias esperando retorno. A demanda é tratada com agilidade e comunicação direta.' },
                 { n: '02', title: 'Visual com função', desc: 'O visual não existe para enfeitar. Ele existe para valorizar sua oferta e ajudar o cliente a decidir.' },
-                { n: '03', title: 'Atendimento direto', desc: 'Sem linguagem complicada, sem excesso de etapas. Você mostra a necessidade e a SnapVisual resolve.' },
-                { n: '04', title: 'Pronto para a rotina', desc: 'Os materiais chegam pensados para uso real: formatos certos, aplicação simples, menos dependência técnica.' },
+                { n: '03', title: 'Atendimento direto', desc: 'Sem excesso de etapas, sem enrolação e sem linguagem técnica desnecessária. Você mostra a demanda e recebe direção clara.' },
+                { n: '04', title: 'Pronto para a rotina', desc: 'Os materiais já chegam pensados para uso real, com formatos adequados, aplicação simples e menos dependência técnica.' },
+                { n: '05', title: 'Padrão visual consistente', desc: 'A comunicação deixa de parecer improvisada e passa a transmitir mais organização e confiança.' },
               ].map((w, i) => (
                 <div key={i} className={`wcard reveal d${(i % 2) + 1}`}>
                   <div className="wnum">{w.n}</div>
@@ -351,12 +442,27 @@ export default function Home() {
           </div>
         </section>
 
+        {/* DEMANDAS */}
+        <section style={{ padding: '40px 20px 80px', background: '#0A0A0A' }}>
+          <div className="reveal d2" style={{ maxWidth: '600px', margin: '0 auto', background: '#111', border: '1px solid #1C1C1C', borderRadius: '8px', padding: '32px' }}>
+            <h3 style={{ fontSize: '16px', color: '#F5F5F5', marginBottom: '20px', fontFamily: 'Montserrat, sans-serif' }}>Você pode falar com a SnapVisual para:</h3>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: '#8B8B8B', fontSize: '14px', lineHeight: '1.8' }}>
+              <li>• melhorar o visual do Instagram</li>
+              <li>• criar landing page para apresentar melhor seu serviço</li>
+              <li>• editar vídeos com mais acabamento profissional</li>
+              <li>• montar materiais institucionais e apresentações</li>
+            </ul>
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="cta">
           <div className="section-eyebrow reveal" style={{ justifyContent: 'center' }}>Comece hoje</div>
-          <ShimmerText as="h2" className="cta-title reveal d1">Seu visual pode começar a melhorar hoje</ShimmerText>
-          <p className="cta-sub reveal d2">Você manda o básico da demanda. A SnapVisual analisa, responde rápido e indica o caminho mais direto.</p>
-          <button className="btn-orange reveal d3" onClick={openModal}><span className="s" /><span className="s" /><span className="s" /><span className="s" />Quero melhorar minha marca</button>
+          <ShimmerText as="h2" className="cta-title reveal d1">Fale com a SnapVisual e receba uma direção clara para sua demanda</ShimmerText>
+          <p className="cta-sub reveal d2">Você envia o básico da necessidade, a SnapVisual analisa o caso e indica a solução mais direta para sua marca, peça ou página. Sem enrolação e sem complicar o processo.</p>
+          
+          <button className="btn-orange reveal d3" onClick={openModal}><span className="s" /><span className="s" /><span className="s" /><span className="s" />Pedir orçamento no WhatsApp</button>
+
           <div className="cta-metas reveal d4">
             {['Resposta em poucas horas', 'Atendimento direto, sem robôs', 'Orçamento sem compromisso'].map(t => (
               <span key={t} className="cmeta">
