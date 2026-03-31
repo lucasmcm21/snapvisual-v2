@@ -467,7 +467,7 @@ export default function Home() {
             {['Resposta em poucas horas', 'Atendimento direto, sem robôs', 'Orçamento sem compromisso'].map(t => (
               <span key={t} className="cmeta">
                 <span className="cmeta-icon">
-                  <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M2 5l2.5 2.5L8 3" stroke="#0A0A0A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>

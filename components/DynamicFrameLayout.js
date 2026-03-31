@@ -76,44 +76,6 @@ export default function DynamicFrameLayout() {
                 display: 'block',
               }}
             />
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)',
-              display: 'flex',
-              alignItems: 'flex-end',
-              padding: '12px',
-            }}>
-              <div style={{
-                background: 'rgba(10,10,10,0.85)',
-                padding: '6px 10px',
-                borderRadius: '6px',
-                backdropFilter: 'blur(6px)',
-                width: '100%'
-              }}>
-                <span style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  color: '#F5F5F5',
-                  fontFamily: 'Montserrat, sans-serif',
-                  display: 'block',
-                }}>
-                  {item.label}
-                </span>
-                {item.desc && (
-                  <span style={{
-                    fontSize: '10px',
-                    color: '#8B8B8B',
-                    fontFamily: 'Poppins, sans-serif',
-                    marginTop: '2px',
-                    display: 'block',
-                    lineHeight: 1.3
-                  }}>
-                    {item.desc}
-                  </span>
-                )}
-              </div>
-            </div>
           </div>
         ))}
       </div>
